@@ -260,10 +260,11 @@ animate(
 -   The code below will unzip it, move it into a fire_kml file directory that contains a kml file that is readable in R
 
 ```{r}
+library (leaflet)
 unzip("data/FirespotArea_LANDSAT_USA_contiguous_and_Hawaii_7d.kmz", exdir = "data/fire_kml")
 
 wildfire_area_data <- st_read(
-  "data/fire_kml/LANDSAT_USA_contiguous_and_Hawaii_7d_1757462691416.kml",
+  "data/fire_kml/LANDSAT_USA_contiguous_and_Hawaii_7d_1757637852247.kml",
   layer = "30m Fire Detection Footprints (older than the last 24hrs) "
 )
 
@@ -292,6 +293,37 @@ Download the LANDSAT 30m CSV for USA (Conterminous) and Hawaii at the bottom rig
 -   Map the data with any package you would like, just make sure there is at least a slight difference from the examples above, be as creative as possible while utilizing your critical thinking
 
 ```{r}
+library(sf)
+library(dplyr)
+library(leaflet)
+
+# 1. Read the CSV into a dataframe
+fires_df <- read.csv("data/LANDSAT_USA_contiguous_and_Hawaii_7d.csv")
+
+# 2. Transform into an sf object (specify CRS = WGS84)
+fires_sf <- st_as_sf(
+  fires_df,
+  coords = c("longitude", "latitude"),
+  crs = 4326
+)
+
+# 3. Map creatively
+leaflet(fires_sf) |>
+  addProviderTiles("CartoDB.Positron") |>  # lighter basemap for contrast
+  addCircleMarkers(
+    radius = ~ifelse(confidence > 80, 6, 3),   # bigger dots for higher confidence
+    color = ~ifelse(daynight == "D", "orange", "blue"), # orange for day, blue for night detections
+    fillOpacity = 0.7,
+    popup = ~paste("Date:", acq_date,
+                   "<br>Confidence:", confidence,
+                   "<br>Satellite:", satellite)
+  ) |>
+  addLegend(
+    position = "bottomright",
+    colors = c("orange", "blue"),
+    labels = c("Day", "Night"),
+    title = "Detection Time"
+  )
 
 ```
 
