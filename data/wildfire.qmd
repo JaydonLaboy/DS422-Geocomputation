@@ -297,17 +297,14 @@ library(sf)
 library(dplyr)
 library(leaflet)
 
-# 1. Read the CSV into a dataframe
 fires_df <- read.csv("data/LANDSAT_USA_contiguous_and_Hawaii_7d.csv")
 
-# 2. Transform into an sf object (specify CRS = WGS84)
 fires_sf <- st_as_sf(
   fires_df,
   coords = c("longitude", "latitude"),
   crs = 4326
 )
 
-# 3. Map creatively
 leaflet(fires_sf) |>
   addProviderTiles("CartoDB.Positron") |>  # lighter basemap for contrast
   addCircleMarkers(
