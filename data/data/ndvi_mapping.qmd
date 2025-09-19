@@ -142,7 +142,47 @@ mapview(ndvi_small,
 -   **0.2–0.5**: sparse/brown vegetation, shrubs/grass
 -   **0–0.2**: bare soil / urban
 -   **\< 0**: water, clouds, shadows, snow
+-   Find a research paper that utilizes NDVI to do something cool, paste a link to the paper below with a 3 sentence summary of how the paper uses NDVI
 
-2.  Find a research paper that utilizes NDVI to do something cool, paste a link to the paper below with a 3 sentence summary of how the paper uses NDVI
+```{r}
+# Reclassify NDVI into categories
+ndvi_classes <- classify(ndvi_oahu, 
+                         rcl = matrix(c(
+                           -Inf, 0, 1,   # water/shadow/snow
+                            0, 0.2, 2,   # bare soil / urban
+                            0.2, 0.5, 3, # sparse vegetation
+                            0.6, 0.9, 4  # dense vegetation
+                         ), ncol = 3, byrow = TRUE))
 
-\
+# Count pixels per class
+counts <- freq(ndvi_classes) %>% as_tibble()
+
+# Map class IDs to labels
+labels <- tibble(
+  value = 1:4,
+  class = c("< 0: water/shadow/snow",
+            "0–0.2: bare soil / urban",
+            "0.2–0.5: sparse vegetation",
+            "0.6–0.9: dense vegetation")
+)
+
+# Join with labels and calculate percentages
+counts <- counts %>%
+  left_join(labels, by = "value") %>%
+  mutate(percent = count / sum(count) * 100)
+
+# Plot with ggplot2
+ggplot(counts, aes(x = class, y = percent, fill = class)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "NDVI Class Distribution - Oʻahu",
+       x = "NDVI Class",
+       y = "Percentage of Area (%)") +
+  theme_minimal()
+
+
+```
+
+Paper: <https://www.fao.org/4/i2560e/i2560e07.pdf>
+
+Summary: Forest degradation is a major global concern, by 2000 an estimated 800 million hectares were affected. This issue contributes significantly to greenhouse gas emissions, showing us the urgent need for reliable monitoring methods. The article explores how remote sensing data, combined with field measurements and NDVI analysis, can track vegetation health and provide insights into forest degradation processes.
