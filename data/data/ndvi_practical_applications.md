@@ -7,7 +7,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ## 1. Framing the Question  
 
 **What environmental or social issue will you explore?**  
-*Write your thoughts here:*  Amazon Rainforest Deforestation over time
+*Write your thoughts here:*  How can changes in NDVI values be used to measure the impacts of deforestation in the Amazon Rainforest over time?
 
 ---
 
@@ -89,7 +89,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ---
 
 **How will you apply this formula in R?**  
-*Write your thoughts here:*  
+*Write your thoughts here:*  For Sentinel-2 imagery, this requires Band 8 (NIR) and Band 4 (Red). For Landsat 8/9, it uses Band 5 (NIR) and Band 4 (Red). In R, I would apply this formula by loading the spectral bands and computing NDVI element-wise. For raster data, I can use the terra package.
 
 ---
 
@@ -97,34 +97,34 @@ This worksheet will guide you through the process of designing and carrying out 
 
 **How will you summarize NDVI values?**  
 (maps, plots, tables)  
-*Write your thoughts here:*  
+*Write your thoughts here:*  I will summarize NDVI values using different methods. First, I can create maps to show the spatial distribution of vegetation health across the study area (Para). Next, I can generate plots such as histograms or time-series graphs to show the overall distribution of NDVI values or how they change over time. Finally, I can use tables to present summary statistics (mean, minimum, maximum, standard deviation) for specific areas or time periods.
 
 ---
 
 **Will you compare locations, beofre and after events, look at seasonal patterns, or study long-term trends?**  
-*Write your thoughts here:*  
+*Write your thoughts here:*  I plan to use NDVI to compare different locations to see how vegetation health varies spatially. I will also look at NDVI values before and after key events (such as fires, or mass tree cuttings) to measure impacts. In addition, I will analyze seasonal patterns to understand how vegetation changes naturally over the year, and I may extend the analysis to study long-term trends to detect signs of recovery or decline in vegetation over time.
 
 ---
 
 **How will you make your visualizations clear and interpretable?**  
-*Write your thoughts here:*  
+*Write your thoughts here:*  I will make my visualizations clear by using appropriate color scales that highlight differences in NDVI values, with greener tones representing healthier vegetation. I will include legendstitles, and labels so the maps and plots are easy to understand. For plots, I will keep the axes and scales consistent to allow comparisons, and for maps, , including titles and labels. I will also avoid clutter and focus on presenting only the most relevant information.
 
 ---
 
 ## 7. Interpreting Results  
 
 **What patterns or relationships do you expect to see?**  
-*Write your thoughts here:*  
+*Write your thoughts here:*  I expect to see higher NDVI values in areas with dense and healthy vegetation, such as forests or farmland, and lower values in areas with sparse vegetation, bare soil, or urban development/deforestation. Over time, I anticipate NDVI will decline in these developed areas compared to surrounding undisturbed locations, showing the impact of land use change on vegetation health.
 
 ---
 
 **How do they relate to your research question?**  
-*Write your thoughts here:*  
+*Write your thoughts here:*  The patterns in NDVI directly relate to my research question on Amazon Rainforest deforestation over time. Declines in NDVI values correspond to areas where forests have been cleared or degraded, while stable or high NDVI values represent regions that remain undisturbed. By tracking these changes, I can measure the extent and pace of deforestation and connect vegetation loss to human development pressures in Para.
 
 ---
 
 **What uncertainties or data limitations should you acknowledge?**  
-*Write your thoughts here:*  
+*Write your thoughts here:*  Some uncertainties come from cloud cover, shadows, and atmospheric conditions, which can affect NDVI accuracy in satellite imagery. Differences in sensor resolution between satellites may also limit comparisons over time. In addition, NDVI only measures greenness and does not capture other aspects of ecosystem health, so vegetation stress or biodiversity loss may not always be visible. Finally, data gaps or missing images can make it harder to track consistent changes over long time periods.
 
 ---
 
