@@ -145,3 +145,4 @@ This worksheet will guide you through the process of designing and carrying out 
 
 3. Are there detectable signs of forest degradation (gradual NDVI decline) versus abrupt clearing, and do these follow different spatial patterns?
 
+4. Are there overlays with rainfall and changes in vegetation densities?
