@@ -1,4 +1,4 @@
-# 🌿 NDVI Analysis Project Worksheet  (Jaydon, Sano, La'a)
+# 🌿 NDVI Analysis Project Worksheet  (Jaydon, Sano, La'a, Kili)
 
 This worksheet will guide you through the process of designing and carrying out an NDVI-based analysis in R. Fill in the prompts for your chosen research question, location, time period, data sources, and methods.  
 
