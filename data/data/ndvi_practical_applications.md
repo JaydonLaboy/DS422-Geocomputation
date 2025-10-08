@@ -67,7 +67,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ---
 
 **How will you handle projections, boundaries, or missing data?**  
-*Write your thoughts here:*  Projections: Landsat, Sentinel, and MODIS all come in different coordinate reference systems (CRS). To compare them or overlay with Para’s boundary shapefile, everything needs to be in the same CRS. ChatGPT explained the solution would be, "Reproject all rasters and vector data to a common projection before analysis. For regional studies in Para, a projected CRS like UTM Zone 21S (EPSG:32721) or WGS84 / UTM works well because it minimizes distortion locally." Boundaries: We only want NDVI data within Pará, not the entire Amazon Basin or Brazil. The solution would be to import Para’s state boundary shapefile (from IBGE or GADM) Missing Data: The Amazon has heavy cloud cover, and satellites often produce NDVI values of NA in cloudy/shadowed areas. The solution would be to apply cloud masks, and use temporal compositing.
+*Write your thoughts here:*  Projections: Landsat, Sentinel, and MODIS all come in different coordinate reference systems (CRS). To compare them or overlay with Para’s boundary shapefile, everything needs to be in the same CRS. ChatGPT explained the solution would be, "Reproject all rasters and vector data to a common projection before analysis. For regional studies in Para, a projected CRS like UTM Zone 21S (EPSG:32721) or WGS84 / UTM works well because it minimizes distortion locally." Boundaries: We only want NDVI data within Para, not the entire Amazon Basin or Brazil. The solution would be to import Para’s state boundary shapefile (from IBGE or GADM) Missing Data: The Amazon has heavy cloud cover, and satellites often produce NDVI values of NA in cloudy/shadowed areas. The solution would be to apply cloud masks, and use temporal compositing.
 
 ---
 
@@ -89,7 +89,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ---
 
 **How will you apply this formula in R?**  
-*Write your thoughts here:*  For Sentinel-2 imagery, this requires Band 8 (NIR) and Band 4 (Red). For Landsat 8/9, it uses Band 5 (NIR) and Band 4 (Red). In R, I would apply this formula by loading the spectral bands and computing NDVI element-wise. For raster data, I can use the terra package.
+*Write your thoughts here:*  For Sentinel-2 imagery, this requires Band 8 (NIR) and Band 4 (Red). In R, I would apply this formula by loading the spectral bands and computing NDVI element-wise. For raster data, I can use the terra package.
 
 ---
 
