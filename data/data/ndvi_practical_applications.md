@@ -24,7 +24,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ## 2. Choosing a Place and Time  
 
 **What geographic area will you focus on?**  
-*Write your thoughts here:*  Para (a state in Brazil) Pará is one of the largest states in Brazil and has experienced some of the highest rates of deforestation in the Amazon. Its forests are under pressure from logging, cattle ranching, soybean farming, and the expansion of road networks
+*Write your thoughts here:*  Para (a state in Brazil) Para is one of the largest states in Brazil and has experienced some of the highest rates of deforestation in the Amazon. Its forests are under pressure from logging, cattle ranching, soybean farming, and the expansion of road networks
 
 ---
 
@@ -35,7 +35,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ---
 
 **How will you define the scope of your analysis?**  
-*Write your thoughts here:*  The analysis will focus on the state of Pará, Brazil, which is one of the Amazon’s major deforestation frontiers. I will use satellite-derived NDVI data to track changes in forest greenery as a proxy for vegetation loss.
+*Write your thoughts here:*  The analysis will focus on the state of Para, Brazil, which is one of the Amazon’s major deforestation frontiers. I will use satellite-derived NDVI data to track changes in forest greenery as a proxy for vegetation loss.
 
 ---
 
@@ -67,7 +67,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ---
 
 **How will you handle projections, boundaries, or missing data?**  
-*Write your thoughts here:*  Projections: Landsat, Sentinel, and MODIS all come in different coordinate reference systems (CRS). To compare them or overlay with Pará’s boundary shapefile, everything needs to be in the same CRS. ChatGPT explained the solution would be, "Reproject all rasters and vector data to a common projection before analysis. For regional studies in Pará, a projected CRS like UTM Zone 21S (EPSG:32721) or WGS84 / UTM works well because it minimizes distortion locally." Boundaries: We only want NDVI data within Pará, not the entire Amazon Basin or Brazil. The solution would be to import Pará’s state boundary shapefile (from IBGE or GADM) Missing Data: The Amazon has heavy cloud cover, and satellites often produce NDVI values of NA in cloudy/shadowed areas. The solution would be to apply cloud masks, and use temporal compositing.
+*Write your thoughts here:*  Projections: Landsat, Sentinel, and MODIS all come in different coordinate reference systems (CRS). To compare them or overlay with Para’s boundary shapefile, everything needs to be in the same CRS. ChatGPT explained the solution would be, "Reproject all rasters and vector data to a common projection before analysis. For regional studies in Para, a projected CRS like UTM Zone 21S (EPSG:32721) or WGS84 / UTM works well because it minimizes distortion locally." Boundaries: We only want NDVI data within Pará, not the entire Amazon Basin or Brazil. The solution would be to import Para’s state boundary shapefile (from IBGE or GADM) Missing Data: The Amazon has heavy cloud cover, and satellites often produce NDVI values of NA in cloudy/shadowed areas. The solution would be to apply cloud masks, and use temporal compositing.
 
 ---
 
