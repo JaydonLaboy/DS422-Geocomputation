@@ -7,7 +7,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ## 1. Framing the Question  
 
 **What environmental or social issue will you explore?**  
-*Write your thoughts here:*  How can changes in NDVI values be used to measure the impacts of deforestation in the Amazon Rainforest over time?
+*Write your thoughts here:*  How can changes in NDVI values be used to measure the impacts of deforestation in Para, Brazil over time?
 
 ---
 
@@ -42,7 +42,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ## 3. Finding Data  
 
 **Where could you get satellite imagery or NDVI data?**  
-*Write your thoughts here:*  Landsat (2000–2024) for the long-term NDVI trend or Sentinel-2 (2015–2024) for high-resolution recent deforestation mapping.
+*Write your thoughts here:*  MODIS (2000–2024) for high-resolution recent deforestation mapping.
 
 
 
@@ -50,7 +50,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ---
 
 **What resolution and frequency are appropriate?**  
-*Write your thoughts here:*  
+*Write your thoughts here* 250m resolution and roughly 1200 images a year for 24 years.
 
 ---
 
@@ -62,7 +62,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ## 4. Bringing Data into R  
 
 **What R packages can help you work with spatial data?**  
-*Write your thoughts here:*  sf, terra, stars
+*Write your thoughts here:*  sf, terra, MODISTools, tidyverse, future.apply, here
 
 ---
 
@@ -72,7 +72,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ---
 
 **What file formats will you be working with?**  
-*Write your thoughts here:*  raster, jp2, 
+*Write your thoughts here:*  raster, jp2, qmd
 
 ---
 
@@ -84,7 +84,7 @@ This worksheet will guide you through the process of designing and carrying out 
 ---
 
 **Which spectral bands are needed?**  
-*Write your thoughts here:*  Band 4 and 8 (sentinel) and Band 5 and 4 (Landsat)
+*Write your thoughts here:*  Band 4 and 8 (sentinel)
 
 ---
 
@@ -132,9 +132,16 @@ This worksheet will guide you through the process of designing and carrying out 
 
 
 **Could your results inform decisions, policies, or further research?**  
-*Write your thoughts here:*  
+*Write your thoughts here:*  Yes, NDVI trends across Para can inform land use planning, enforcement, and conservation policy by identifying hotspots of ongoing loss and regions showing recovery. Results could support monitoring to high-decline areas, the design and evaluation of protected areas or restoration projects, and performance tracking for deforestation eduction programs. They would also be useful to NGOs and Indigenous organizations for advocacy and community land management. 
 
 ---
 
-**What new questions emerge from your findings?**  
+**What new questions could emerge from your findings?**  
 *Write your thoughts here:*  
+
+1. What are the proximate drivers in the highestloss hotspots?
+
+2. How do NDVI declines correlate with land-cover change maps (to separate agriculture, pasture, and bare ground) and with fire occurrence or road expansion datasets?
+
+3. Are there detectable signs of forest degradation (gradual NDVI decline) versus abrupt clearing, and do these follow different spatial patterns?
+
