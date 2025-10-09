@@ -1,0 +1,127 @@
+---
+title: "NDVI Practice"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+# -----------------------------
+# 0. Install required packages
+# -----------------------------
+if(!requireNamespace("MODISTools", quietly = TRUE)) install.packages("MODISTools")
+if(!requireNamespace("tidyverse", quietly = TRUE)) install.packages("tidyverse")
+if(!requireNamespace("sf", quietly = TRUE)) install.packages("sf")
+if(!requireNamespace("future.apply", quietly = TRUE)) install.packages("future.apply")
+if(!requireNamespace("here", quietly = TRUE)) install.packages("here")
+
+# -----------------------------
+# 1. Load libraries
+# -----------------------------
+library(MODISTools)
+library(tidyverse)
+library(sf)
+library(future.apply)
+library(here)
+
+# -----------------------------
+# 2. Define Pará bounding box
+# -----------------------------
+para_bbox <- st_bbox(c(xmin = -55, xmax = -45, ymin = -5, ymax = 2), crs = 4326)
+
+# Create a grid of points (0.25° spacing; ~1189 points)
+lon_seq <- seq(para_bbox$xmin, para_bbox$xmax, by = 0.25)
+lat_seq <- seq(para_bbox$ymin, para_bbox$ymax, by = 0.25)
+pts <- expand.grid(lon = lon_seq, lat = lat_seq)
+
+# -----------------------------
+# 3. Setup parallel plan
+# -----------------------------
+library(future)
+plan(multisession, workers = parallel::detectCores() - 1)  # leave one core free
+
+# -----------------------------
+# 4. Download NDVI in parallel
+# -----------------------------
+download_point <- function(i) {
+  cat("Downloading point", i, "of", nrow(pts), "\n")
+  temp <- try(
+    MODISTools::mt_subset(
+      product = "MOD13Q1",
+      lat = pts$lat[i],
+      lon = pts$lon[i],
+      band = "250m_16_days_NDVI",
+      start = "2000-01-01",   # <--- changed
+      end = "2025-01-01",     # <--- changed
+      km_lr = 0,
+      km_ab = 0,
+      site_name = paste0("Point_", i),
+      internal = TRUE
+    ), silent = TRUE
+  )
+ 
+  if(!inherits(temp, "try-error")) return(temp)
+  else return(NULL)
+}
+
+ndvi_list <- future_lapply(1:nrow(pts), download_point)
+ndvi_data <- bind_rows(ndvi_list)
+
+# -----------------------------
+# 5. Scale NDVI
+# -----------------------------
+ndvi_data <- ndvi_data %>%
+  mutate(value = value / 10000)
+
+# -----------------------------
+# 6. Classify NDVI
+# -----------------------------
+ndvi_data <- ndvi_data %>%
+  mutate(class = case_when(
+    value < 0 ~ "water/shadow/snow",
+    value >= 0 & value < 0.2 ~ "bare soil / urban",
+    value >= 0.2 & value < 0.5 ~ "sparse vegetation",
+    value >= 0.5 ~ "dense vegetation"
+  ))
+
+# -----------------------------
+# 7. Summarize by date
+# -----------------------------
+ndvi_summary <- ndvi_data %>%
+  group_by(calendar_date, class) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(calendar_date) %>%
+  mutate(percent = count / sum(count) * 100)
+
+# -----------------------------
+# 8. Plot time series
+# -----------------------------
+ggplot(ndvi_summary, aes(x = as.Date(calendar_date), y = percent, color = class)) +
+  geom_line(size = 1) +
+  labs(
+    title = "NDVI Class Distribution Over Time - Pará, Brazil (2000–2025)",
+    x = "Date",
+    y = "Percentage (%)",
+    color = "NDVI Class"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+--
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
