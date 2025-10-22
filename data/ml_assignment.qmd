@@ -427,9 +427,9 @@ print(rf)
 
 Look at the printed output and answer:
 
-1.  **Mean of squared residuals (MSR)**: How accurate are the predictions on average?
-2.  **% Var explained**: What percentage of SNAP variation does the model explain?
-3.  **Interpretation**: Is this good? What might the model be missing?
+1.  **Mean of squared residuals (MSR)**: How accurate are the predictions on average? The model’s predictions differ from the actual SNAP participation rates by about √45.83 ≈ 6.8 percentage points. That’s a moderate level of prediction error.
+2.  **% Var explained**: What percentage of SNAP variation does the model explain? The model explains 58.6% of the variation in SNAP participation across census tracts.
+3.  **Interpretation**: Is this good? What might the model be missing? This is a fairly strong model for social and economic data, where perfect prediction is rare. However, it may miss important factors not included in the Census data, such as food prices, store access, local programs, or cultural influences.
 
 Remember: MSR tells you the average squared prediction error. % Var explained is like R² - higher is better!
 :::
@@ -474,15 +474,9 @@ Prepare the model for SHAP analysis by:
 :::
 
 ```{r}
-#| label: challenge-8-prepare-shap
-#| code-fold: false
-
-# YOUR CODE HERE
-# Step 1: Unify your Random Forest model
-# unified <- unify(???, ???)
-
-# Step 2: Calculate SHAP values for first 200 observations
-# treeshap1 <- treeshap(???, ???, verbose = 0)
+unified <- unify(rf, hi_acs_data_ml)
+treeshap1 <- treeshap(unified, hi_acs_data_ml[1:200, ], verbose = 0)
+treeshap1
 
 ```
 
@@ -513,11 +507,10 @@ Create a feature importance plot showing the top 5 most important variables for 
 :::
 
 ```{r}
-#| label: challenge-5-feature-importance
-#| code-fold: false
+library(treeshap)
 
-# YOUR CODE HERE
-# Plot feature importance (top 5 most important features)
+plot_feature_importance(treeshap1, max_vars = 5)
+
 
 ```
 
@@ -526,10 +519,10 @@ Create a feature importance plot showing the top 5 most important variables for 
 
 Based on your feature importance plot:
 
-1.  What are the TOP 2 most important predictors of SNAP participation?
-2.  Why do you think these variables matter?
-3.  Are there any surprising results?
-4.  What does this tell you about food security in Hawaiʻi?
+1.  What are the TOP 2 most important predictors of SNAP participation? The top two predictors of SNAP participation are the percentage of residents with a bachelor’s degree or higher and the poverty rate.
+2.  Why do you think these variables matter? These variables matter because they both reflect economic opportunity and need. Areas with fewer college-educated residents often have lower incomes and higher poverty, increasing reliance on SNAP benefits.
+3.  Are there any surprising results? It is surprising that education level is even more influential than poverty rate
+4.  What does this tell you about food security in Hawaiʻi? This suggests that food security in Hawaiʻi is deeply connected to both economic inequality and access to education.
 :::
 
 ------------------------------------------------------------------------
@@ -552,7 +545,7 @@ Create feature dependence plots for the **top 5 most important features** you id
 #| label: challenge-6-dependence-1
 #| code-fold: false
 
-# YOUR CODE HERE - Feature Dependence Plot #1
+plot_feature_dependence(treeshap1, "poverty_rate_pct")
 
 ```
 
@@ -560,7 +553,7 @@ Create feature dependence plots for the **top 5 most important features** you id
 #| label: challenge-6-dependence-2
 #| code-fold: false
 
-# YOUR CODE HERE - Feature Dependence Plot #2
+plot_feature_dependence(treeshap1, "median_income")
 
 ```
 
@@ -568,7 +561,7 @@ Create feature dependence plots for the **top 5 most important features** you id
 #| label: challenge-6-dependence-3
 #| code-fold: false
 
-# YOUR CODE HERE - Feature Dependence Plot #3
+plot_feature_dependence(treeshap1, "unemployment_rate_pct")
 
 ```
 
@@ -576,7 +569,7 @@ Create feature dependence plots for the **top 5 most important features** you id
 #| label: challenge-6-dependence-4
 #| code-fold: false
 
-# YOUR CODE HERE - Feature Dependence Plot #4
+plot_feature_dependence(treeshap1, "bachelors_or_higher_pct")
 
 ```
 
@@ -584,7 +577,7 @@ Create feature dependence plots for the **top 5 most important features** you id
 #| label: challenge-6-dependence-5
 #| code-fold: false
 
-# YOUR CODE HERE - Feature Dependence Plot #5
+plot_feature_dependence(treeshap1, "broadband_pct")
 
 ```
 
@@ -619,8 +612,9 @@ Examine what drives predictions for **Census Tract 304.04 on Maui, Hawaiʻi**.
 #| label: challenge-7-contribution
 #| code-fold: false
 
-# YOUR CODE HERE
-# Plot contribution effects for Census Tract 304.04, Maui
+# Plot contribution effects for Census Tract 304.04 (Maui, observation #154)
+plot_contribution(treeshap1, obs = 154)
+
 
 ```
 
@@ -629,11 +623,11 @@ Examine what drives predictions for **Census Tract 304.04 on Maui, Hawaiʻi**.
 
 Answer these questions about Maui Census Tract 304.04:
 
-1.  **Baseline**: What's the model's baseline prediction?
-2.  **Pushers**: Which 2-3 variables push predictions toward HIGHER SNAP%?
-3.  **Pullers**: Which 2-3 variables push predictions toward LOWER SNAP%?
-4.  **Net Effect**: Is the final prediction above or below the baseline?
-5.  **Story**: Write 2-3 sentences telling the "story" of this tract's SNAP participation
+1.  **Baseline**: What's the model's baseline prediction? The model’s baseline represents the average predicted SNAP participation across all tracts in Hawaii.
+2.  **Pushers**: Which 2-3 variables push predictions toward HIGHER SNAP%? Variables such as high poverty rate, low median income, and lower broadband access likely push the prediction toward a higher SNAP percentage.
+3.  **Pullers**: Which 2-3 variables push predictions toward LOWER SNAP%? Features like a higher education level (bachelor’s or higher) and greater broadband access can pull the prediction toward a lower SNAP percentage.
+4.  **Net Effect**: Is the final prediction above or below the baseline? The final prediction is above the baseline which means that the model expects this area to have higher than average SNAP participation.
+5.  **Story**: Write 2-3 sentences telling the "story" of this tract's SNAP participation. Economic challenges such as poverty and limited income likely drive greater reliance on SNAP benefits. Some stabilizing factors like education or connectivity may help reduce need, showing a community balancing both opportunity and hardship.
 :::
 
 ------------------------------------------------------------------------
@@ -647,30 +641,30 @@ Answer these questions in text below:
 
 ### Understanding the Analysis
 
-1.  **Model Performance**: How well does your Random Forest predict SNAP participation? What might explain the remaining unexplained variation?
+1.  **Model Performance**: How well does your Random Forest predict SNAP participation? What might explain the remaining unexplained variation? The model predicted SNAP participation fairly well. It captured most of the major patterns (~59%) but not everything. The remaining variation could be due to factors not included in the dataset.
 
-2.  **Key Drivers**: Based on feature importance and dependence plots, which 2-3 factors are most strongly associated with SNAP participation in Hawaiʻi?
+2.  **Key Drivers**: Based on feature importance and dependence plots, which 2-3 factors are most strongly associated with SNAP participation in Hawaiʻi? The most important predictors of SNAP participation were poverty rate, median income, and unemployment rate. These make sense because lower income and higher unemployment usually lead to more people needing food assistance.
 
 3.  **Equity Implications**:
 
     -   What does the geographic distribution of SNAP participation tell you about food security disparities?
-    -   Are certain communities more vulnerable?
+    -   Are certain communities more vulnerable? The map showed that SNAP participation is higher in both rural and urban areas under economic pressure. This suggests that food insecurity in Hawaiʻi is shaped by both poverty and geography.
 
 4.  **Limitations**:
 
     -   What important variables might be missing from this analysis?
-    -   What are the limitations of predicting SNAP participation? (Remember: correlation ≠ causation)
+    -   What are the limitations of predicting SNAP participation? (Remember: correlation ≠ causation) This analysis doesn’t include every factor that affects food insecurity, such as food prices, local store access, or community support programs. Also, the model only shows correlations, not direct causes.
 
 5.  **Policy Recommendations**:
 
-    -   Based on your findings, what 2-3 policy interventions might help address food insecurity?
-    -   Who should be targeted? Where should resources be focused?
+    -   Based on your findings, what 2-3 policy interventions might help address food insecurity? Improving job access, supporting local food systems, and expanding outreach in high need areas.
+    -   Who should be targeted? Where should resources be focused? Efforts should target both low income urban neighborhoods and remote rural communities where access and opportunity are limited.
 
 ### Technical Reflection
 
-6.  **Machine Learning Interpretation**: How did SHAP values help you understand the Random Forest model compared to just looking at variable importance?
+6.  **Machine Learning Interpretation**: How did SHAP values help you understand the Random Forest model compared to just looking at variable importance? They helped me see why the model made certain predictions. Instead of just knowing which variables were important, it showed me how each feature pushed the prediction higher or lower.
 
-7.  **Next Steps**: If you were to continue this analysis, what would you do next?
+7.  **Next Steps**: If you were to continue this analysis, what would you do next? I’d gather more detailed community data, like information on local food programs, transportation access, and housing costs.
 :::
 
 ------------------------------------------------------------------------
