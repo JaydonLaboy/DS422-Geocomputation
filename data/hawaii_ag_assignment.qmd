@@ -1,0 +1,136 @@
+---
+title: "hawaii_ag_land_project"
+format: html
+editor: visual
+---
+
+```{r}
+library(sf)
+library(dplyr)
+library(tmap)
+
+ag15 <- st_read("data/Agricultural_Land_Use_-_2015_Baseline.geojson")
+ag20 <- st_read("data/Agricultural_Land_Use_-_2020_Update.geojson")
+
+st_crs(ag20)
+st_crs(ag15)
+ag20 <- st_transform(ag20, st_crs(ag15))
+
+ag15 <- ag15 %>% mutate(area_ha = as.numeric(st_area(geometry)) / 10000)
+ag20 <- ag20 %>% mutate(area_ha = as.numeric(st_area(geometry)) / 10000)
+
+```
+
+```{r}
+names(ag15)
+names(ag20)
+head(ag15)
+head(ag20)
+
+```
+
+```{r}
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(tmap)
+library(viridis)
+
+ag15 <- st_read("data/Agricultural_Land_Use_-_2015_Baseline.geojson")
+ag20 <- st_read("data/Agricultural_Land_Use_-_2020_Update.geojson")
+
+ag15 <- ag15 %>%
+  rename(crop = cropcatego) %>%
+  mutate(year = 2015,
+         area_ha = as.numeric(st_area(geometry)) / 10000)
+
+ag20 <- ag20 %>%
+  rename(crop = crops_2020) %>%
+  mutate(year = 2020,
+         area_ha = as.numeric(st_area(geometry)) / 10000)
+
+ag_all <- bind_rows(ag15, ag20)
+
+by_crop <- ag_all %>%
+  st_drop_geometry() %>%
+  group_by(year, crop) %>%
+  summarise(total_ha = sum(area_ha, na.rm = TRUE)) %>%
+  ungroup()
+
+change_crop <- by_crop %>%
+  tidyr::pivot_wider(names_from = year, values_from = total_ha) %>%
+  mutate(change_ha = `2020` - `2015`,
+         pct_change = 100 * change_ha / `2015`)
+
+change_crop %>%
+  arrange(desc(abs(change_ha))) %>%
+  head(10)
+
+ggplot(change_crop, aes(x = reorder(crop, change_ha), y = change_ha, fill = change_ha > 0)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  scale_fill_manual(values = c("TRUE" = "#1a9850", "FALSE" = "#d73027")) +
+  labs(title = "Change in Agricultural Land by Crop Type (2015–2020)",
+       x = "Crop Type",
+       y = "Change in Area (ha)") +
+  theme_minimal()
+
+by_island <- ag_all %>%
+  st_drop_geometry() %>%
+  group_by(year, island) %>%
+  summarise(total_ha = sum(area_ha, na.rm = TRUE)) %>%
+  tidyr::pivot_wider(names_from = year, values_from = total_ha) %>%
+  mutate(change_ha = `2020` - `2015`,
+         pct_change = 100 * change_ha / `2015`)
+
+
+```
+
+2015 Agriculture
+
+```{r}
+tmap_mode("view")
+tm_shape(ag15) +
+  tm_polygons("crop", palette = "viridis", alpha = 0.6,
+              title = "Crop Type (2015)") +
+  tm_basemap("Esri.WorldImagery")
+
+```
+
+![](images/clipboard-2437206725.png)
+
+2020 Agriculture
+
+```{r}
+tmap_mode("view")
+tm_shape(ag20) +
+  tm_polygons("crop", palette = "viridis", alpha = 0.6,
+              title = "Crop Type (2020)") +
+  tm_basemap("Esri.WorldImagery")
+
+```
+
+![](images/clipboard-796675536.png)
+
+Between 2015 and 2020, agricultural land use in Hawaiʻi hasnt changed significantly. The most striking trend was the sharp decline in sugarcane cultivation, largely due to the closure of the last commercial sugar operations, particularly on Maui.
+
+2015-2020 Comparison
+
+```{r}
+library(tmap)
+
+tmap_mode("view")
+
+map_2015 <- tm_shape(ag15) +
+  tm_polygons("crop", palette = "viridis", alpha = 0.6,
+              title = "Crop Type (2015)") +
+  tm_basemap("Esri.WorldImagery")
+
+map_2020 <- tm_shape(ag20) +
+  tm_polygons("crop", palette = "viridis", alpha = 0.6,
+              title = "Crop Type (2020)") +
+  tm_basemap("Esri.WorldImagery")
+
+tmap_arrange(map_2015, map_2020, ncol = 2)
+
+```
