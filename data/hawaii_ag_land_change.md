@@ -109,3 +109,5 @@ You are encouraged to:
 - Tell a spatial story
 
 Agricultural land in Hawaiʻi is changing — what can you reveal about *how* and *why*?
+
+

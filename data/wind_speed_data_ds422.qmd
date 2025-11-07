@@ -1,0 +1,23 @@
+---
+title: "winddata"
+format: html
+editor: visual
+---
+
+```{r}
+library(sf)
+library(ggplot2)
+
+
+wind <- st_read("data/Wind_Speed_100m.geojson")
+
+ggplot(wind) +
+  geom_sf(aes(color = speed_mps), size = 0.6) +
+  scale_color_viridis_c(name = "Wind Speed (m/s)") +
+  theme_minimal() +
+  labs(
+    title = "Wind Speed at 100m",
+    subtitle = "Colored by wind speed (m/s)"
+  )
+
+```
