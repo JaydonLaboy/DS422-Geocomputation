@@ -8,9 +8,10 @@ editor: visual
 library(sf)
 library(dplyr)
 library(tmap)
+library(here)
 
-ag15 <- st_read("data/Agricultural_Land_Use_-_2015_Baseline.geojson")
-ag20 <- st_read("data/Agricultural_Land_Use_-_2020_Update.geojson")
+ag15 <- st_read(here("data/Agricultural_Land_Use_-_2015_Baseline.geojson"))
+ag20 <- st_read(here("data/Agricultural_Land_Use_-_2020_Update.geojson"))
 
 st_crs(ag20)
 st_crs(ag15)
@@ -35,9 +36,10 @@ library(dplyr)
 library(ggplot2)
 library(tmap)
 library(viridis)
+library(here)
 
-ag15 <- st_read("data/Agricultural_Land_Use_-_2015_Baseline.geojson")
-ag20 <- st_read("data/Agricultural_Land_Use_-_2020_Update.geojson")
+ag15 <- st_read(here("data/Agricultural_Land_Use_-_2015_Baseline.geojson"))
+ag20 <- st_read(here("data/Agricultural_Land_Use_-_2020_Update.geojson"))
 
 ag15 <- ag15 %>%
   rename(crop = cropcatego) %>%
